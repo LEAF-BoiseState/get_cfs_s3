@@ -17,7 +17,7 @@ def downloadDirectoryFroms3(bucketName, remoteDirectoryName):
         print('downloaded '+obj.key)
         
 for date in cfs_dates:
-    cfs_dir_name = 'cfs.'+date+'/06/6hrly_grib_01/'
+    cfs_dir_name = 'cfs.'+date+'/00/6hrly_grib_01/'
     
     print('Downloading data from '+cfs_aws_bucket+'::'+cfs_dir_name)
 
