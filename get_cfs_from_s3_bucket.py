@@ -38,7 +38,7 @@ def downloadDirectoryFroms3(bucketName, remoteDirectoryName, endDate):
 # Get Pandas Timestamp version of beginning and end times
 cfs_dates_end_dt = pd.to_datetime(cfs_dates,format='%Y%m%d') + pd.Timedelta(days=lead_time)
 
-for i in np.arange(cfs_dates.size):
+for i in np.arange(len(cfs_dates)):
 
     cfs_dir_name = 'cfs.'+cfs_dates[i]+'/00/6hrly_grib_01/'
     
