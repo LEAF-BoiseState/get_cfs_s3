@@ -24,11 +24,16 @@ def downloadDirectoryFroms3(bucketName, remoteDirectoryName, endDate):
         fxst_time_dt = pd.to_datetime(fxst_time,format='%Y%m%d%H') # Converts this to a date time
         
         if(fxst_time_dt <= endDate): # Compare date time of current file to end date
-            bucket.download_file(obj.key, obj.key) # save to same path
-            print('True: downloaded '+obj.key)
+            try:
+                bucket.download_file(obj.key, obj.key) # save to same path
+                print('True: downloaded '+obj.key)
+            except botocore.exceptions.ClientError as e:
+                if e.response['Error']['Code'] == "404":
+                    print('File '+obj.key+' does not exist')
+                else:
+                    print('Could not download file '+obj.key)
         else:
-            print('False: skipped '+obj.key)
-            
+            print('False: skipped '+obj.key)            
         
 # Get Pandas Timestamp version of beginning and end times
 cfs_dates_end_dt = pd.to_datetime(cfs_dates,format='%Y%m%d') + pd.Timedelta(days=lead_time)
