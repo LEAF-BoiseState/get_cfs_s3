@@ -28,7 +28,7 @@ def downloadDirectoryFroms3(bucketName, remoteDirectoryName, endDate):
         # Compare date time of current file to end date, or see if it's an analysis file
         if((fxst_time_dt <= endDate) or (file_name.find('anl')!=-1)): 
             try:
-                #bucket.download_file(obj.key, obj.key) # save to same path
+                bucket.download_file(obj.key, obj.key) # save to same path
                 print('True: downloaded '+obj.key)
             except botocore.exceptions.ClientError as e:
                 if e.response['Error']['Code'] == "404":
