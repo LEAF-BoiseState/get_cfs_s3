@@ -11,6 +11,7 @@ cfs_aws_bucket = 'noaa-cfs-pds'
 
 lead_time = 20
 
+
 def downloadDirectoryFroms3(bucketName, remoteDirectoryName, endDate):
     s3_resource = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
     bucket = s3_resource.Bucket(bucketName) 
@@ -20,12 +21,14 @@ def downloadDirectoryFroms3(bucketName, remoteDirectoryName, endDate):
             
         # Get the forecast date and time portion of the file name
         file_name = obj.key.partition('/')[-1] # Gets name of GRIB file
-        fxst_time = file_name.partition('.')[0][-10:-1] # Gets 10 characters to the left of the first '.'
-        fxst_time_dt = pd.to_datetime(fxst_time,format='%Y%m%d%H') # Converts this to a date time
+        if(file_name.find('anl')==-1):
+            fxst_time = file_name.partition('.')[0][-10:-1] # Gets 10 characters to the left of the first '.'
+            fxst_time_dt = pd.to_datetime(fxst_time,format='%Y%m%d%H') # Converts this to a date time
         
-        if(fxst_time_dt <= endDate): # Compare date time of current file to end date
+        # Compare date time of current file to end date, or see if it's an analysis file
+        if((fxst_time_dt <= endDate) or (file_name.find('anl')!=-1)): 
             try:
-                bucket.download_file(obj.key, obj.key) # save to same path
+                #bucket.download_file(obj.key, obj.key) # save to same path
                 print('True: downloaded '+obj.key)
             except botocore.exceptions.ClientError as e:
                 if e.response['Error']['Code'] == "404":
@@ -33,8 +36,8 @@ def downloadDirectoryFroms3(bucketName, remoteDirectoryName, endDate):
                 else:
                     print('Could not download file '+obj.key)
         else:
-            print('False: skipped '+obj.key)            
-        
+            print('False: skipped '+obj.key)
+                    
 # Get Pandas Timestamp version of beginning and end times
 cfs_dates_end_dt = pd.to_datetime(cfs_dates,format='%Y%m%d') + pd.Timedelta(days=lead_time)
 
