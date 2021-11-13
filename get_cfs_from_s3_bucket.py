@@ -35,7 +35,7 @@ cfs_dates_end_dt = pd.to_datetime(cfs_dates,format='%Y%m%d') + pd.Timedelta(days
 
 for i in np.arange(cfs_dates.size):
 
-    cfs_dir_name = 'cfs.'+cfs_dates[i]+'/06/6hrly_grib_01/'
+    cfs_dir_name = 'cfs.'+cfs_dates[i]+'/00/6hrly_grib_01/'
     
     print('Downloading data from '+cfs_aws_bucket+'::'+cfs_dir_name)
 
